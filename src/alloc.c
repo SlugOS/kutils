@@ -1,3 +1,9 @@
+/**
+ * @file alloc.c
+ * @brief Provides basic memory allocation for hobby operating systems based on static memory area in the BSS
+ * 
+ */
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -5,17 +11,26 @@
 #define MEMORY_SIZE 4096
 static uint8_t memory[MEMORY_SIZE];
 
-// Block header structure
+/**
+ * @brief Block header structure
+ * 
+ */
 typedef struct block_header {
     size_t size;           // Size of the data area (not including header)
     uint8_t is_free;       // 1 if block is free, 0 if allocated
     struct block_header* next; // Pointer to the next block
 } block_header_t;
 
-// Initialize the memory pool with a single free block
+/**
+ * @brief Initialize the memory pool with a single free block that will be split up and used
+ * 
+ */
 static block_header_t* head = NULL;
 
-// Function to initialize our memory allocator
+/**
+ * @brief Function to initialize the memory allocator
+ * 
+ */
 void init_allocator() {
     if (head != NULL) return; // Already initialized
     
@@ -26,7 +41,13 @@ void init_allocator() {
     head->next = NULL;
 }
 
-// Find a free block of sufficient size using first-fit algorithm
+/**
+ * @brief Find a free block of sufficient size using first-fit algorithm
+ * 
+ * @param last The last block
+ * @param size The size of the block we need
+ * @return block_header_t* A pointer to the block header that we end up using
+ */
 static block_header_t* find_free_block(block_header_t** last, size_t size) {
     block_header_t* current = head;
     
@@ -38,7 +59,12 @@ static block_header_t* find_free_block(block_header_t** last, size_t size) {
     return current;
 }
 
-// Split a block if it's much larger than needed
+/**
+ * @brief Split a block if it's much larger than needed
+ * 
+ * @param block This is the block we split
+ * @param size This is the new block
+ */
 static void split_block(block_header_t* block, size_t size) {
     // Only split if the difference would be large enough to hold a new block
     if (block->size < size + sizeof(block_header_t) + 8) {
@@ -56,7 +82,12 @@ static void split_block(block_header_t* block, size_t size) {
     block->next = new_block;
 }
 
-// Custom malloc implementation
+/**
+ * @brief A simple implementation of malloc (memory alloc)
+ * 
+ * @param size The size of the block we allocate
+ * @return void* A pointer to the allocated part of memory
+ */
 void* malloc(size_t size) {
     if (size == 0) return NULL;
     
@@ -85,7 +116,13 @@ void* malloc(size_t size) {
     return (uint8_t*)block + sizeof(block_header_t);
 }
 
-// Custom calloc implementation
+/**
+ * @brief Allocates memory for an array of elements
+ * 
+ * @param num The number of elements
+ * @param size The size of each element
+ * @return void* A pointer to the memory
+ */
 void* calloc(size_t num, size_t size) {
     size_t total_size = num * size;
     
@@ -107,7 +144,10 @@ void* calloc(size_t num, size_t size) {
     return ptr;
 }
 
-// Helper function to merge adjacent free blocks
+/**
+ * @brief Merge adjacent free blocks
+ * 
+ */
 static void merge_free_blocks() {
     block_header_t* current = head;
     
@@ -122,7 +162,11 @@ static void merge_free_blocks() {
     }
 }
 
-// Custom free implementation
+/**
+ * @brief Free a pointer from the memory pool
+ * 
+ * @param ptr The pointer that we free
+ */
 void free(void* ptr) {
     if (ptr == NULL) return;
     
@@ -136,7 +180,13 @@ void free(void* ptr) {
     merge_free_blocks();
 }
 
-// Custom realloc implementation
+/**
+ * @brief This function will reallocate a pointer to be a new size
+ * 
+ * @param ptr The pointer we want to reallocate it is valid until reallocation
+ * @param size The size we want to reallocate to
+ * @return void* The new pointer
+ */
 void* realloc(void* ptr, size_t size) {
     // Handle special cases
     if (ptr == NULL) {

@@ -7,6 +7,14 @@
 
 /* GCC and Clang reserve the right to generate calls to the following 4 functions even if they are not directly called. */
 
+/**
+ * @brief Copy one segment of memory to another
+ * 
+ * @param dest The destination or target of src
+ * @param src This is the data we copy
+ * @param n The size/amount of data copied so we know when to stpo
+ * @return void* This returns the destination
+ */
 void *memcpy(void *dest, const void *src, size_t n) {
     uint8_t *pdest = (uint8_t *)dest;
     const uint8_t *psrc = (const uint8_t *)src;
@@ -18,6 +26,14 @@ void *memcpy(void *dest, const void *src, size_t n) {
     return dest;
 }
 
+/**
+ * @brief This sets a place in memory to be a value
+ * 
+ * @param s The source
+ * @param c The target
+ * @param n The amount
+ * @return void* The stuff we input
+ */
 void *memset(void *s, int c, size_t n) {
     uint8_t *p = (uint8_t *)s;
 
@@ -28,6 +44,14 @@ void *memset(void *s, int c, size_t n) {
     return s;
 }
 
+/**
+ * @brief Move one part of memory to another
+ * 
+ * @param dest The destination we move to
+ * @param src The source that we move to the destination
+ * @param n The size of what we copy
+ * @return void* The pointer to the destination
+ */
 void *memmove(void *dest, const void *src, size_t n) {
     uint8_t *pdest = (uint8_t *)dest;
     const uint8_t *psrc = (const uint8_t *)src;
@@ -45,6 +69,14 @@ void *memmove(void *dest, const void *src, size_t n) {
     return dest;
 }
 
+/**
+ * @brief Compare a place in memory
+ * 
+ * @param s1 The first place to compare
+ * @param s2 The second place to compare
+ * @param n The amount of both places we want to compare
+ * @return int 0 if they are equal 1 if they are unequal
+ */
 int memcmp(const void *s1, const void *s2, size_t n) {
     const uint8_t *p1 = (const uint8_t *)s1;
     const uint8_t *p2 = (const uint8_t *)s2;
