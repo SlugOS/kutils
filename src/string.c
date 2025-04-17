@@ -1,5 +1,7 @@
 /**
- * This covers basic string functions
+ * @file string.c
+ * @brief This covers basic string functions and memory functions
+ * 
  */
 
 #include <stdint.h>
